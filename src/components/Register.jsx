@@ -1,5 +1,6 @@
 import { Container, Form, Row, Col, Button, Alert } from "react-bootstrap";
 import { useState } from "react";
+import { useNavigate } from "react-router-dom";
 
 function Register() {
   const [formData, setFormData] = useState({
@@ -13,6 +14,8 @@ function Register() {
   const [errorMessage, setErrorMessage] = useState("");
   const [successMessage, setSuccessMessage] = useState("");
   const [isLoading, setIsLoading] = useState(false);
+
+  const navigate = useNavigate();
 
   const handleChange = (e) => {
     const { name, value } = e.target;
@@ -91,7 +94,6 @@ function Register() {
         }
         throw new Error(data.message || "Registration failed");
       }
-
       setSuccessMessage(
         data.message || "Registration sucessfull! You can now login"
       );
