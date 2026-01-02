@@ -1,6 +1,99 @@
 import { Container, Form, Row, Col, Button, Alert } from "react-bootstrap";
+import { useState } from "react";
+import { useNavigate } from "react-router-dom";
 
 function Login() {
+  const [errors, setErrors] = useState({});
+  const [errorMessage, setErrorMessage] = useState("");
+  const [isLoading, setIsLoading] = useState(false);
+
+  const navigate = useNavigate();
+
+  const [formdata, setFormData] = useState({
+    username: "",
+    password: "",
+  });
+
+  const handleChange = (e) => {
+    const { name, value } = e.target;
+
+    setFormData({
+      ...formdata,
+      [name]: value,
+    });
+
+    if (errors[name]) {
+      setErrors({
+        ...errors,
+        [name]: "",
+      });
+    }
+
+    if (errorMessage) setErrorMessage("");
+  };
+
+  const handleSubmit = async (e) => {
+    e.preventDefault();
+
+    if (!formdata.username.trim() || !formdata.password.trim()) {
+      setErrorMessage("Please fill in all fields");
+      return;
+    }
+
+    setIsLoading(true);
+    setErrorMessage("");
+    setErrors({});
+
+    try {
+      const response = await fetch("http://flex-list-api.local/api/login", {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+          Accept: "application/json",
+        },
+        body: JSON.stringify(formdata),
+      });
+
+      const data = await response.json();
+
+      if (!response.ok) {
+        if (data.errors) {
+          const validationErrors = {};
+          Object.keys(data.errors).forEach((key) => {
+            validationErrors[key] = data.errors[key][0];
+          });
+          setErrors(validationErrors);
+          throw new Error("Validation failed");
+        } else if (data.message) {
+          throw new Error(data.message);
+        } else {
+          throw new Error("Login failed. Please try again.");
+        }
+      }
+
+      if (response.ok) {
+        const name = data.user.name;
+
+        navigate("/", {
+          state: {
+            name: name,
+          },
+        });
+      }
+    } catch (error) {
+      setErrorMessage(
+        error.message || "Username or Password is incorrect. Please try again."
+      );
+    } finally {
+      setIsLoading(false);
+    }
+  };
+
+  const clearMessages = () => {
+    setErrorMessage("");
+    setErrors({});
+  };
+
   return (
     <Container
       className="d-flex justify-content-center align-items-center"
