@@ -94,9 +94,14 @@ function Register() {
         }
         throw new Error(data.message || "Registration failed");
       }
+
       setSuccessMessage(
-        data.message || "Registration sucessfull! You can now login"
+        data.message || "Registration successful! You can now login"
       );
+
+      setTimeout(() => {
+        navigate("/login");
+      }, 2000);
 
       setFormData({
         name: "",
