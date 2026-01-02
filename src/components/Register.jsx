@@ -126,30 +126,99 @@ function Register() {
         <Col xs={12} md={8} lg={6}>
           <div className="p-4 p-md-5 shadow-lg rounded-3 bg-white">
             <h2 className="text-center mb-4">Register</h2>
-            <Form>
+            {successMessage && (
+              <Alert
+                variant="success"
+                className="mb-4"
+                dismissible
+                onClose={clearMessages}
+              >
+                <p className="mb-0">{successMessage}</p>
+              </Alert>
+            )}
+            {errorMessage && (
+              <Alert
+                variant="danger"
+                className="mb-4"
+                dismissible
+                onClose={clearMessages}
+              >
+                <p className="mb-0">{errorMessage}</p>
+              </Alert>
+            )}
+            <Form onSubmit={handleSubmit}>
               <Form.Group className="mb-3" controlId="formBasicName">
                 <Form.Label>Name</Form.Label>
-                <Form.Control type="text" placeholder="Enter name" />
+                <Form.Control
+                  type="text"
+                  placeholder="Enter name"
+                  name="name"
+                  value={formData.name}
+                  onChange={handleChange}
+                  isInvalid={!!errors.name}
+                  disabled={isLoading}
+                />
+                <Form.Control.Feedback type="invalid">
+                  {errors.name}
+                </Form.Control.Feedback>
               </Form.Group>
 
               <Form.Group className="mb-3" controlId="formBasicUsername">
                 <Form.Label>Username</Form.Label>
-                <Form.Control type="text" placeholder="Enter username" />
+                <Form.Control
+                  type="text"
+                  placeholder="Enter username"
+                  name="username"
+                  value={formData.username}
+                  onChange={handleChange}
+                  isInvalid={!!errors.username}
+                  disabled={isLoading}
+                />
+                <Form.Control.Feedback type="invalid">
+                  {errors.username}
+                </Form.Control.Feedback>
               </Form.Group>
 
               <Form.Group className="mb-3" controlId="formBasicPassword">
                 <Form.Label>Password</Form.Label>
-                <Form.Control type="password" placeholder="Password" />
+                <Form.Control
+                  type="password"
+                  placeholder="Password"
+                  name="password"
+                  value={formData.password}
+                  onChange={handleChange}
+                  isInvalid={!!errors.password}
+                  disabled={isLoading}
+                />
+                <Form.Control.Feedback type="invalid">
+                  {errors.password}
+                </Form.Control.Feedback>
               </Form.Group>
 
               <Form.Group className="mb-3" controlId="formBasicConfirmPassword">
                 <Form.Label>Confirm Password</Form.Label>
-                <Form.Control type="password" placeholder="Confirm Password" />
+                <Form.Control
+                  type="password"
+                  placeholder="Confirm Password"
+                  name="password_confirmation"
+                  value={formData.password_confirmation}
+                  onChange={handleChange}
+                  isInvalid={!!errors.password_confirmation}
+                  disabled={isLoading}
+                />
+                <Form.Control.Feedback type="invalid">
+                  {errors.password_confirmation}
+                </Form.Control.Feedback>
               </Form.Group>
 
               <div className="d-grid">
-                <Button variant="primary" type="submit" size="lg">
-                  Submit
+                <Button
+                  variant="primary"
+                  type="submit"
+                  size="lg"
+                  disabled={isLoading}
+                >
+                  {isLoading ? "Loading..." : "Submit"}
                 </Button>
               </div>
             </Form>
