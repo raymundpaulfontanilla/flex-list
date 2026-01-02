@@ -103,21 +103,69 @@ function Login() {
         <Col xs={12} md={8} lg={6}>
           <div className="p-4 p-md-5 shadow-lg rounded-3 bg-white">
             <h2 className="text-center mb-4">Login</h2>
-            <Form>
+            {errorMessage && (
+              <Alert
+                variant="danger"
+                className="mb-4"
+                dismissible
+                onClose={clearMessages}
+              >
+                <p className="mb-0">{errorMessage}</p>
+              </Alert>
+            )}
+            <Form onSubmit={handleSubmit}>
               <Form.Group className="mb-3" controlId="formBasicUsername">
                 <Form.Label>Username</Form.Label>
-                <Form.Control type="text" placeholder="Enter username" />
+                <Form.Control
+                  type="text"
+                  placeholder="Enter username"
+                  name="username"
+                  value={formdata.username}
+                  onChange={handleChange}
+                  isInvalid={!!errors.username}
+                />
+                <Form.Control.Feedback type="invalid">
+                  {errors.username}
+                </Form.Control.Feedback>
               </Form.Group>
 
               <Form.Group className="mb-3" controlId="formBasicPassword">
                 <Form.Label>Password</Form.Label>
-                <Form.Control type="password" placeholder="Password" />
+                <Form.Control
+                  type="password"
+                  placeholder="Password"
+                  name="password"
+                  value={formdata.password}
+                  onChange={handleChange}
+                  isInvalid={!!errors.password}
+                />
+                <Form.Control.Feedback type="invalid">
+                  {errors.password}
+                </Form.Control.Feedback>
               </Form.Group>
 
               <div className="d-grid">
-                <Button variant="primary" type="submit" size="lg">
-                  Login
+                <Button
+                  variant="primary"
+                  type="submit"
+                  size="lg"
+                  disabled={isLoading}
+                >
+                  {isLoading ? "Logging in..." : "Login"}
                 </Button>
+              </div>
+
+              <div className="text-center mt-3">
+                <p className="mb-0">
+                  Don't have an account?{" "}
+                  <Button
+                    variant="link"
+                    className="p-0"
+                    onClick={() => navigate("/register")}
+                  >
+                    Register here
+                  </Button>
+                </p>
               </div>
             </Form>
           </div>
