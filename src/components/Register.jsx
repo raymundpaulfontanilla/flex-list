@@ -223,6 +223,18 @@ function Register() {
                   {isLoading ? "Loading..." : "Submit"}
                 </Button>
               </div>
+              <div className="text-center mt-3">
+                <p className="mb-0">
+                  Already have an account?{" "}
+                  <Button
+                    variant="link"
+                    className="p-0"
+                    onClick={() => navigate("/login")}
+                  >
+                    Login here
+                  </Button>
+                </p>
+              </div>
             </Form>
           </div>
         </Col>
