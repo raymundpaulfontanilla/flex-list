@@ -127,13 +127,34 @@ function Dashboard() {
             </span>
           </div>
 
-          <div className={styles.emptyState}>
-            <div className={styles.emptyIcon}>🎉</div>
-            <div className={styles.emptyTitle}>No completed tasks yet</div>
-            <div className={styles.emptySubtitle}>
-              Drag tasks from the left column to mark them as pending
+          {completedTasks.length === 1 ? (
+            <div className={styles.tasksList}>
+              {completedTasks.map((task) => (
+                <div key={task.id} draggable className={styles.taskCard}>
+                  <div className={styles.taskContent}>
+                    <div className={styles.taskDetails}>
+                      <div className={styles.taskTitle}>{task.title}</div>
+                      <div className={styles.taskMeta}>
+                        Order: {task.display_order}
+                      </div>
+                    </div>
+                    <div className={styles.taskActions}>
+                      <button className={styles.actionButton}>✏️</button>
+                      <button className={styles.actionButton}>🗑️</button>
+                    </div>
+                  </div>
+                </div>
+              ))}
             </div>
-          </div>
+          ) : (
+            <div className={styles.emptyState}>
+              <div className={styles.emptyIcon}>🎉</div>
+              <div className={styles.emptyTitle}>No completed tasks yet</div>
+              <div className={styles.emptySubtitle}>
+                Drag tasks from the left column to mark them as pending
+              </div>
+            </div>
+          )}
         </div>
       </div>
     </div>
