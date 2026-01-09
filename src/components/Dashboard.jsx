@@ -62,6 +62,10 @@ function Dashboard() {
     ? tasks.filter((task) => task.is_completed === 0 || !task.is_completed)
     : [];
 
+  const completedTasks = Array.isArray(tasks)
+    ? tasks.filter((task) => task.is_completed === 1)
+    : 0;
+
   return (
     <div className={styles.container}>
       <div className={styles.header}>
@@ -119,7 +123,7 @@ function Dashboard() {
           <div className={styles.columnHeader}>
             <h4 className={styles.columnTitle}>✅ Completed Tasks</h4>
             <span className={`${styles.counter} ${styles.completedCounter}`}>
-              0
+              {completedTasks.length}
             </span>
           </div>
 
