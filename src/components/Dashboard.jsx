@@ -1,6 +1,67 @@
 import styles from "./dashboard.module.css";
+import { useState, useEffect } from "react";
 
 function Dashboard() {
+  const [tasks, setTasks] = useState([]);
+  const [errors, setErrors] = useState(null);
+  const [isLoading, setIsLoading] = useState(false);
+
+  useEffect(() => {
+    let isMounted = true;
+
+    const fetchTasks = async () => {
+      try {
+        setIsLoading(true);
+        setErrors(null);
+
+        const url = "http://flex-list-api.local/api/tasks";
+        const response = await fetch(url);
+
+        if (!response.ok) {
+          throw new Error(`HTTP status error ${response.status}`);
+        }
+
+        const result = await response.json();
+
+        if (isMounted) {
+          if (Array.isArray(result)) {
+            setTasks(result);
+          } else if (result && result.task && Array.isArray(result.task)) {
+            setTasks(result.task);
+          } else {
+            setTasks([]);
+          }
+        }
+      } catch (error) {
+        if (isMounted) {
+          setErrors(`Oops something went wrong: ${error.message}`);
+        }
+      } finally {
+        if (isMounted) {
+          setIsLoading(false);
+        }
+      }
+    };
+
+    fetchTasks();
+
+    return () => {
+      isMounted = false;
+    };
+  }, []);
+
+  if (errors) {
+    return <div>Error: {errors}</div>;
+  }
+
+  if (isLoading) {
+    return <p>Loading...</p>;
+  }
+
+  const pendingTasks = Array.isArray(tasks)
+    ? tasks.filter((task) => task.is_completed === 0 || !task.is_completed)
+    : [];
+
   return (
     <div className={styles.container}>
       <div className={styles.header}>
@@ -30,7 +91,7 @@ function Dashboard() {
           <div className={styles.columnHeader}>
             <h4 className={styles.columnTitle}>📝 Pending Tasks</h4>
             <span className={`${styles.counter} ${styles.pendingCounter}`}>
-              3
+              {pendingTasks.length}
             </span>
           </div>
 
