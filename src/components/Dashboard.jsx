@@ -1,54 +1,8 @@
 import styles from "./dashboard.module.css";
-import { useState, useEffect } from "react";
+import { useFetch } from "../hooks/useFetch";
 
 function Dashboard() {
-  const [tasks, setTasks] = useState([]);
-  const [errors, setErrors] = useState(null);
-  const [isLoading, setIsLoading] = useState(false);
-
-  useEffect(() => {
-    let isMounted = true;
-
-    const fetchTasks = async () => {
-      try {
-        setIsLoading(true);
-        setErrors(null);
-
-        const url = "http://flex-list-api.local/api/tasks";
-        const response = await fetch(url);
-
-        if (!response.ok) {
-          throw new Error(`HTTP status error ${response.status}`);
-        }
-
-        const result = await response.json();
-
-        if (isMounted) {
-          if (Array.isArray(result)) {
-            setTasks(result);
-          } else if (result && result.task && Array.isArray(result.task)) {
-            setTasks(result.task);
-          } else {
-            setTasks([]);
-          }
-        }
-      } catch (error) {
-        if (isMounted) {
-          setErrors(`Oops something went wrong: ${error.message}`);
-        }
-      } finally {
-        if (isMounted) {
-          setIsLoading(false);
-        }
-      }
-    };
-
-    fetchTasks();
-
-    return () => {
-      isMounted = false;
-    };
-  }, []);
+  const { errors, isLoading, tasks } = useFetch();
 
   if (errors) {
     return <div>Error: {errors}</div>;
