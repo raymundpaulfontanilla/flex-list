@@ -1,54 +1,8 @@
 import styles from "./dashboard.module.css";
-import { useState, useEffect } from "react";
+import { useFetch } from "../hooks/useFetch";
 
 function Dashboard() {
-  const [tasks, setTasks] = useState([]);
-  const [errors, setErrors] = useState(null);
-  const [isLoading, setIsLoading] = useState(false);
-
-  useEffect(() => {
-    let isMounted = true;
-
-    const fetchTasks = async () => {
-      try {
-        setIsLoading(true);
-        setErrors(null);
-
-        const url = "http://flex-list-api.local/api/tasks";
-        const response = await fetch(url);
-
-        if (!response.ok) {
-          throw new Error(`HTTP status error ${response.status}`);
-        }
-
-        const result = await response.json();
-
-        if (isMounted) {
-          if (Array.isArray(result)) {
-            setTasks(result);
-          } else if (result && result.task && Array.isArray(result.task)) {
-            setTasks(result.task);
-          } else {
-            setTasks([]);
-          }
-        }
-      } catch (error) {
-        if (isMounted) {
-          setErrors(`Oops something went wrong: ${error.message}`);
-        }
-      } finally {
-        if (isMounted) {
-          setIsLoading(false);
-        }
-      }
-    };
-
-    fetchTasks();
-
-    return () => {
-      isMounted = false;
-    };
-  }, []);
+  const { errors, isLoading, tasks } = useFetch();
 
   if (errors) {
     return <div>Error: {errors}</div>;
@@ -64,7 +18,7 @@ function Dashboard() {
 
   const completedTasks = Array.isArray(tasks)
     ? tasks.filter((task) => task.is_completed === 1)
-    : 0;
+    : [];
 
   return (
     <div className={styles.container}>
@@ -99,24 +53,34 @@ function Dashboard() {
             </span>
           </div>
 
-          <div className={styles.tasksList}>
-            {pendingTasks.map((task) => (
-              <div key={task.id} draggable className={styles.taskCard}>
-                <div className={styles.taskContent}>
-                  <div className={styles.taskDetails}>
-                    <div className={styles.taskTitle}>{task.title}</div>
-                    <div className={styles.taskMeta}>
-                      Order: {task.display_order}
+          {pendingTasks.length > 0 ? (
+            <div className={styles.tasksList}>
+              {pendingTasks.map((task) => (
+                <div key={task.id} draggable className={styles.taskCard}>
+                  <div className={styles.taskContent}>
+                    <div className={styles.taskDetails}>
+                      <div className={styles.taskTitle}>{task.title}</div>
+                      <div className={styles.taskMeta}>
+                        Order: {task.display_order}
+                      </div>
+                    </div>
+                    <div className={styles.taskActions}>
+                      <button className={styles.actionButton}>✏️</button>
+                      <button className={styles.actionButton}>🗑️</button>
                     </div>
                   </div>
-                  <div className={styles.taskActions}>
-                    <button className={styles.actionButton}>✏️</button>
-                    <button className={styles.actionButton}>🗑️</button>
-                  </div>
                 </div>
+              ))}
+            </div>
+          ) : (
+            <div className={styles.emptyState}>
+              <div className={styles.emptyIcon}>☕</div>
+              <div className={styles.emptyTitle}>All caught up!</div>
+              <div className={styles.emptySubtitle}>
+                No pending tasks at the moment.
               </div>
-            ))}
-          </div>
+            </div>
+          )}
         </div>
 
         <div className={`${styles.column} ${styles.completedColumn}`}>
@@ -127,7 +91,7 @@ function Dashboard() {
             </span>
           </div>
 
-          {completedTasks.length === 1 ? (
+          {completedTasks.length > 0 ? (
             <div className={styles.tasksList}>
               {completedTasks.map((task) => (
                 <div key={task.id} draggable className={styles.taskCard}>
@@ -151,7 +115,7 @@ function Dashboard() {
               <div className={styles.emptyIcon}>🎉</div>
               <div className={styles.emptyTitle}>No completed tasks yet</div>
               <div className={styles.emptySubtitle}>
-                Drag tasks from the left column to mark them as pending
+                Complete tasks to see them here.
               </div>
             </div>
           )}
