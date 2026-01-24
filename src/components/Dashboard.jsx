@@ -18,7 +18,7 @@ function Dashboard() {
 
   const completedTasks = Array.isArray(tasks)
     ? tasks.filter((task) => task.is_completed === 1)
-    : 0;
+    : [];
 
   return (
     <div className={styles.container}>
