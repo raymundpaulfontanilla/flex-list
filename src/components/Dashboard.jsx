@@ -91,7 +91,7 @@ function Dashboard() {
             </span>
           </div>
 
-          {completedTasks.length === 1 ? (
+          {completedTasks.length > 0 ? (
             <div className={styles.tasksList}>
               {completedTasks.map((task) => (
                 <div key={task.id} draggable className={styles.taskCard}>
@@ -115,7 +115,7 @@ function Dashboard() {
               <div className={styles.emptyIcon}>🎉</div>
               <div className={styles.emptyTitle}>No completed tasks yet</div>
               <div className={styles.emptySubtitle}>
-                Drag tasks from the left column to mark them as pending
+                Complete tasks to see them here.
               </div>
             </div>
           )}
