@@ -1,5 +1,11 @@
 import { useState, useEffect } from "react";
 
+const BASE_API_URL = "http://flex-list-api.local/api";
+
+const ENDPOINTS = {
+  getAllTasks: `${BASE_API_URL}/tasks`,
+};
+
 export const useFetch = () => {
   const [tasks, setTasks] = useState([]);
   const [errors, setErrors] = useState(null);
