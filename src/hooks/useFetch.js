@@ -16,7 +16,7 @@ export const useFetch = () => {
       setIsLoading(false);
       setErrors(null);
 
-      const response = await fetch("http://flex-list-api.local/api/tasks");
+      const response = await fetch(ENDPOINTS.getAllTasks);
 
       if (!response.ok) {
         throw new Error(`HTTP status error ${response.status}`);
