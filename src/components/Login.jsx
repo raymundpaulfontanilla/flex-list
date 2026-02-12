@@ -70,10 +70,9 @@ function Login() {
           throw new Error("Login failed. Please try again.");
         }
       }
-
       if (response.ok) {
         const name = data.user.name;
-        const apiToken = data.api_token;
+        const apiToken = data.token;
 
         localStorage.setItem("api_token", apiToken);
 
