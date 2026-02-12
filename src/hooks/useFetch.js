@@ -13,10 +13,18 @@ export const useFetch = () => {
 
   const fetchTasks = async () => {
     try {
-      setIsLoading(false);
+      setIsLoading(true);
       setErrors(null);
 
-      const response = await fetch(ENDPOINTS.getAllTasks);
+      const apiToken = localStorage.getItem("api_token");
+
+      const response = await fetch(ENDPOINTS.getAllTasks, {
+        method: "GET",
+        headers: {
+          "Content-Type": "application/json",
+          Authorization: `Bearer ${apiToken}`,
+        },
+      });
 
       if (!response.ok) {
         throw new Error(`HTTP status error ${response.status}`);
@@ -26,12 +34,14 @@ export const useFetch = () => {
       setTasks(Array.isArray(data) ? data : (data.task ?? []));
     } catch (error) {
       setErrors(`Error ${error.message}`);
+    } finally {
+      setIsLoading(false);
     }
   };
 
   useEffect(() => {
     fetchTasks();
-  });
+  }, []);
 
   return { tasks, errors, isLoading };
 };
