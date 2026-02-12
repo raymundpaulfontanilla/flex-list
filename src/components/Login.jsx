@@ -73,6 +73,9 @@ function Login() {
 
       if (response.ok) {
         const name = data.user.name;
+        const apiToken = data.api_token;
+
+        localStorage.setItem("api_token", apiToken);
 
         navigate("/", {
           state: {
@@ -82,7 +85,7 @@ function Login() {
       }
     } catch (error) {
       setErrorMessage(
-        error.message || "Username or Password is incorrect. Please try again."
+        error.message || "Username or Password is incorrect. Please try again.",
       );
     } finally {
       setIsLoading(false);
