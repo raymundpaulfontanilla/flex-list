@@ -75,6 +75,7 @@ function Login() {
         const apiToken = data.token;
 
         localStorage.setItem("api_token", apiToken);
+        localStorage.setItem("name", name);
 
         navigate("/", {
           state: {
