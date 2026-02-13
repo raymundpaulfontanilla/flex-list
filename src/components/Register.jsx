@@ -96,12 +96,12 @@ function Register() {
       }
 
       setSuccessMessage(
-        data.message || "Registration successful! You can now login"
+        data.message || "Registration successful! You can now login",
       );
 
       setTimeout(() => {
         navigate("/login");
-      }, 2000);
+      }, 1000);
 
       setFormData({
         name: "",
@@ -112,7 +112,7 @@ function Register() {
     } catch (error) {
       setErrorMessage(
         error.message ||
-          "An error occurred during registration. Please try again."
+          "An error occurred during registration. Please try again.",
       );
     } finally {
       setIsLoading(false);
