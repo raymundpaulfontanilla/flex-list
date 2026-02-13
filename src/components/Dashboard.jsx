@@ -1,12 +1,17 @@
 import styles from "./dashboard.module.css";
 import { useFetch } from "../hooks/useFetch";
+import { useNavigate } from "react-router-dom";
+import { useEffect } from "react";
 
 function Dashboard() {
   const { errors, isLoading, tasks } = useFetch();
+  const navigate = useNavigate();
 
-  if (errors) {
-    return <div>Error: {errors}</div>;
-  }
+  useEffect(() => {
+    if (errors) {
+      navigate("/login");
+    }
+  }, [errors, navigate]);
 
   if (isLoading) {
     return <p>Loading...</p>;
