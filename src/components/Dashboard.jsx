@@ -1,15 +1,26 @@
 import styles from "./dashboard.module.css";
 import { useFetch } from "../hooks/useFetch";
 import { useNavigate } from "react-router-dom";
-import { useEffect } from "react";
+import { useEffect, useState } from "react";
 
 function Dashboard() {
   const { errors, isLoading, tasks } = useFetch();
   const navigate = useNavigate();
+  const [userName, setUserName] = useState(null);
 
   useEffect(() => {
     if (errors) {
       navigate("/login");
+    } else {
+      const storedName = localStorage.getItem("name");
+      const storedNameUpperFirst = localStorage
+        .getItem("name")
+        .charAt(0)
+        .toUpperCase();
+      const restOfName = storedName.slice(1).toLowerCase();
+      if (storedNameUpperFirst) {
+        setUserName(storedNameUpperFirst + restOfName);
+      }
     }
   }, [errors, navigate]);
 
@@ -33,7 +44,7 @@ function Dashboard() {
           <div className={styles.userInfo}>
             <div>
               <div className={styles.welcomeText}>Welcome</div>
-              <div className={styles.userName}>Raymund</div>
+              <div className={styles.userName}>{userName}</div>
             </div>
             Logout
           </div>
