@@ -59,14 +59,16 @@ function Dashboard() {
           </div>
         </div>
 
-        <div className={styles.searchContainer}>
+        <form onSubmit={handleFormSubmit} className={styles.searchContainer}>
           <input
             type="text"
             placeholder="Create new task..."
             className={styles.searchInput}
+            value={newTaskTitle}
+            onChange={(e) => setNewTaskTitle(e.target.value)}
           />
           <button className={styles.searchButton}>Create</button>
-        </div>
+        </form>
       </div>
 
       <div className={styles.tasksContainer}>
