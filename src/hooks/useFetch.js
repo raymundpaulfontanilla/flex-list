@@ -6,6 +6,7 @@ const ENDPOINTS = {
   getAllTasks: BASE_API_URL,
   createTask: `${BASE_API_URL}/create-task`,
   updateTask: (taskId) => `${BASE_API_URL}/update-task/${taskId}`,
+  deleteTask: (taskId) => `${BASE_API_URL}/delete-task/${taskId}`,
 };
 
 export const useFetch = () => {
