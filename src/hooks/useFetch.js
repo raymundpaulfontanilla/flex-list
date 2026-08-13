@@ -6,6 +6,7 @@ const ENDPOINTS = {
   getAllTasks: BASE_API_URL,
   createTask: `${BASE_API_URL}/create-task`,
   updateTask: (taskId) => `${BASE_API_URL}/update-task/${taskId}`,
+  deleteTask: (taskId) => `${BASE_API_URL}/delete-task/${taskId}`,
 };
 
 export const useFetch = () => {
@@ -123,6 +124,24 @@ export const useFetch = () => {
     }
   };
 
+  const deleteTask = async (taskId) => {
+    const headers = getAuthHeaders();
+    if (!headers.Authorization) return;
+
+    try {
+      const response = await fetch(ENDPOINTS.deleteTask(taskId), {
+        method: "DELETE",
+        headers: getAuthHeaders(),
+      });
+      if (!response.ok) {
+        throw new Error(`Server deletion error code: ${response.status}`);
+      }
+      setTasks((prevTasks) => prevTasks.filter((task) => task.id !== taskId));
+    } catch (error) {
+      console.error("Task deletion failed", error.message);
+    }
+  };
+
   useEffect(() => {
     const apiToken = localStorage.getItem("api_token");
     if (apiToken) {
@@ -133,5 +152,5 @@ export const useFetch = () => {
     }
   }, []);
 
-  return { tasks, errors, isLoading, createTask, updateTask };
+  return { tasks, errors, isLoading, createTask, updateTask, deleteTask };
 };
