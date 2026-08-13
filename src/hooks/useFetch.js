@@ -45,9 +45,46 @@ export const useFetch = () => {
     }
   };
 
+  const createTask = async (title) => {
+    try {
+      const apiToken = localStorage.getItem("api_token");
+      if (!apiToken) return;
+
+      const response = await fetch(ENDPOINTS.createTask, {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+          Accept: "application/json",
+          Authorization: `Bearer ${apiToken}`,
+        },
+        body: JSON.stringify({
+          title: title,
+          is_completed: false,
+          display_order: 1,
+        }),
+      });
+
+      if (!response.ok) {
+        throw new Error(`Server creation error code: ${response.status}`);
+      }
+
+      const data = await response.json();
+      const newTask = data.task || data;
+      setTasks((prevTasks) => [...prevTasks, newTask]);
+    } catch (error) {
+      console.error("Task creation failed:", error.message);
+    }
+  };
+
   useEffect(() => {
-    fetchTasks();
+    const apiToken = localStorage.getItem("api_token");
+    if (apiToken) {
+      setIsLoading(true);
+      fetchTasks();
+    } else {
+      setIsLoading(false);
+    }
   }, []);
 
-  return { tasks, errors, isLoading };
+  return { tasks, errors, isLoading, createTask };
 };
