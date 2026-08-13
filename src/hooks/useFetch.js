@@ -12,24 +12,36 @@ export const useFetch = () => {
   const [errors, setErrors] = useState(null);
   const [isLoading, setIsLoading] = useState(true);
 
-  const fetchTasks = async () => {
+  const getValidatedToken = () => {
     const apiToken = localStorage.getItem("api_token");
 
     if (!apiToken) {
       setIsLoading(false);
       return;
     }
+    return apiToken;
+  };
+
+  const getAuthHeaders = () => {
+    const apiToken = getValidatedToken();
+    if (!apiToken) return {};
+
+    return {
+      "Content-Type": "application/json",
+      Accept: "application/json",
+      Authorization: `Bearer ${apiToken}`,
+    };
+  };
+
+  const fetchTasks = async () => {
+    const apiToken = getValidatedToken();
 
     try {
       setErrors(null);
 
       const response = await fetch(ENDPOINTS.getAllTasks, {
         method: "GET",
-        headers: {
-          "Content-Type": "application/json",
-          Accept: "application/json",
-          Authorization: `Bearer ${apiToken}`,
-        },
+        headers: getAuthHeaders(),
       });
 
       if (!response.ok) {
@@ -47,9 +59,6 @@ export const useFetch = () => {
 
   const createTask = async (title) => {
     try {
-      const apiToken = localStorage.getItem("api_token");
-      if (!apiToken) return;
-
       const nextOrder = tasks.length + 1;
 
       if (nextOrder > 5) {
@@ -59,11 +68,7 @@ export const useFetch = () => {
 
       const response = await fetch(ENDPOINTS.createTask, {
         method: "POST",
-        headers: {
-          "Content-Type": "application/json",
-          Accept: "application/json",
-          Authorization: `Bearer ${apiToken}`,
-        },
+        headers: getAuthHeaders(),
         body: JSON.stringify({
           title: title,
           is_completed: false,
