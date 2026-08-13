@@ -152,5 +152,5 @@ export const useFetch = () => {
     }
   }, []);
 
-  return { tasks, errors, isLoading, createTask, updateTask };
+  return { tasks, errors, isLoading, createTask, updateTask, deleteTask };
 };
