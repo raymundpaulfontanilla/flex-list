@@ -182,13 +182,38 @@ function Dashboard() {
             <div className={styles.emptyState}>
               <div className={styles.emptyIcon}>🎉</div>
               <div className={styles.emptyTitle}>No completed tasks yet</div>
-              <div className={styles.emptySubtitle}>
-                Complete tasks to see them here.
-              </div>
             </div>
           )}
         </div>
       </div>
+      {isModalOpen && (
+        <div className={styles.modalOverlay}>
+          <div className={styles.modalContent}>
+            <h4>✏️ Edit Task Title</h4>
+            <form onSubmit={handleEditSubmit}>
+              <input
+                type="text"
+                className={styles.modalInput}
+                value={editTaskTitle}
+                onChange={(e) => setEditTaskTitle(e.target.value)}
+                required
+              />
+              <div className={styles.modalActions}>
+                <button
+                  type="button"
+                  className={styles.cancelButton}
+                  onClick={() => setIsModalOpen(false)}
+                >
+                  Cancel
+                </button>
+                <button type="submit" className={styles.saveButton}>
+                  Save Changes
+                </button>
+              </div>
+            </form>
+          </div>
+        </div>
+      )}
     </div>
   );
 }
