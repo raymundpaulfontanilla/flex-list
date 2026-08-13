@@ -5,6 +5,7 @@ const BASE_API_URL = "http://flex-list-api.local/api/tasks";
 const ENDPOINTS = {
   getAllTasks: BASE_API_URL,
   createTask: `${BASE_API_URL}/create-task`,
+  updateTask: (taskId) => `${BASE_API_URL}/update-task/${taskId}`,
 };
 
 export const useFetch = () => {
@@ -34,7 +35,7 @@ export const useFetch = () => {
   };
 
   const fetchTasks = async () => {
-    const apiToken = getValidatedToken();
+    if (!getValidatedToken) return;
 
     try {
       setErrors(null);
@@ -88,6 +89,38 @@ export const useFetch = () => {
     }
   };
 
+  const updateTask = async (taskId, newTitle) => {
+    if (!getValidatedToken) return;
+
+    try {
+      const response = await fetch(ENDPOINTS.updateTask(taskId), {
+        method: "PUT",
+        headers: getAuthHeaders(),
+        body: JSON.stringify({
+          title: newTitle,
+          is_completed: false,
+          display_order: 1,
+        }),
+      });
+
+      if (!response.ok) {
+        throw new Error(`Server creation error code: ${response.status}`);
+      }
+
+      const data = await response.json();
+      const updateTask = data.task || data;
+
+      setTasks((prevTasks) =>
+        prevTasks.map((task) => (task.id === taskId ? updateTask : task)),
+      );
+
+      return { success: true };
+    } catch (error) {
+      console.error("Task update failed", error.message);
+      return { success: false, error: error.message };
+    }
+  };
+
   useEffect(() => {
     const apiToken = localStorage.getItem("api_token");
     if (apiToken) {
@@ -98,5 +131,5 @@ export const useFetch = () => {
     }
   }, []);
 
-  return { tasks, errors, isLoading, createTask };
+  return { tasks, errors, isLoading, createTask, updateTask };
 };
