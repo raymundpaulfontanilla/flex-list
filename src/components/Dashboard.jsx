@@ -15,15 +15,18 @@ function Dashboard() {
   const [editTaskTitle, setEditTaskTitle] = useState("");
 
   useEffect(() => {
-    if (errors) {
+    const apiToken = localStorage.getItem("api_token");
+    const storedName = localStorage.getItem("name");
+
+    if (errors || !apiToken) {
       navigate("/login");
-    } else {
-      const storedName = localStorage.getItem("name");
-      if (storedName && storedName.length > 0) {
-        const storedNameUpperFirst = storedName.charAt(0).toUpperCase();
-        const restOfName = storedName.slice(1).toLowerCase();
-        setUserName(storedNameUpperFirst + restOfName);
-      }
+      return;
+    }
+
+    if (storedName && storedName.length > 0) {
+      const storedNameUpperFirst = storedName.charAt(0).toUpperCase();
+      const restOfName = storedName.slice(1).toLowerCase();
+      setUserName(storedNameUpperFirst + restOfName);
     }
   }, [errors, navigate]);
 
