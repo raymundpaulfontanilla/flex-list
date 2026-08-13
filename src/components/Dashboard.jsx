@@ -4,9 +4,10 @@ import { useNavigate } from "react-router-dom";
 import { useEffect, useState } from "react";
 
 function Dashboard() {
-  const { errors, isLoading, tasks } = useFetch();
+  const { errors, isLoading, tasks, createTask } = useFetch();
   const navigate = useNavigate();
   const [userName, setUserName] = useState(null);
+  const [newTaskTitle, setNewTaskTitle] = useState("");
 
   useEffect(() => {
     if (errors) {
