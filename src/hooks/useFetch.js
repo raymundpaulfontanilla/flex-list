@@ -3,7 +3,8 @@ import { useState, useEffect } from "react";
 const BASE_API_URL = "http://flex-list-api.local/api/tasks";
 
 const ENDPOINTS = {
-  getAllTasks: `${BASE_API_URL}`,
+  getAllTasks: BASE_API_URL,
+  createTask: `${BASE_API_URL}/create-task`,
 };
 
 export const useFetch = () => {
