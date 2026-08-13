@@ -4,9 +4,10 @@ import { useNavigate } from "react-router-dom";
 import { useEffect, useState } from "react";
 
 function Dashboard() {
-  const { errors, isLoading, tasks } = useFetch();
+  const { errors, isLoading, tasks, createTask } = useFetch();
   const navigate = useNavigate();
   const [userName, setUserName] = useState(null);
+  const [newTaskTitle, setNewTaskTitle] = useState("");
 
   useEffect(() => {
     if (errors) {
@@ -23,6 +24,14 @@ function Dashboard() {
       }
     }
   }, [errors, navigate]);
+
+  const handleFormSubmit = async (e) => {
+    e.preventDefault();
+    if (!newTaskTitle.trim()) return;
+
+    await createTask(newTaskTitle);
+    setNewTaskTitle("");
+  };
 
   if (isLoading) {
     return <p>Loading...</p>;
@@ -50,14 +59,16 @@ function Dashboard() {
           </div>
         </div>
 
-        <div className={styles.searchContainer}>
+        <form onSubmit={handleFormSubmit} className={styles.searchContainer}>
           <input
             type="text"
             placeholder="Create new task..."
             className={styles.searchInput}
+            value={newTaskTitle}
+            onChange={(e) => setNewTaskTitle(e.target.value)}
           />
           <button className={styles.searchButton}>Create</button>
-        </div>
+        </form>
       </div>
 
       <div className={styles.tasksContainer}>

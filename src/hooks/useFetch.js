@@ -3,7 +3,8 @@ import { useState, useEffect } from "react";
 const BASE_API_URL = "http://flex-list-api.local/api/tasks";
 
 const ENDPOINTS = {
-  getAllTasks: `${BASE_API_URL}`,
+  getAllTasks: BASE_API_URL,
+  createTask: `${BASE_API_URL}/create-task`,
 };
 
 export const useFetch = () => {
@@ -12,16 +13,21 @@ export const useFetch = () => {
   const [isLoading, setIsLoading] = useState(true);
 
   const fetchTasks = async () => {
-    try {
-      setIsLoading(true);
-      setErrors(null);
+    const apiToken = localStorage.getItem("api_token");
 
-      const apiToken = localStorage.getItem("api_token");
+    if (!apiToken) {
+      setIsLoading(false);
+      return;
+    }
+
+    try {
+      setErrors(null);
 
       const response = await fetch(ENDPOINTS.getAllTasks, {
         method: "GET",
         headers: {
           "Content-Type": "application/json",
+          Accept: "application/json",
           Authorization: `Bearer ${apiToken}`,
         },
       });
@@ -39,9 +45,46 @@ export const useFetch = () => {
     }
   };
 
+  const createTask = async (title) => {
+    try {
+      const apiToken = localStorage.getItem("api_token");
+      if (!apiToken) return;
+
+      const response = await fetch(ENDPOINTS.createTask, {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+          Accept: "application/json",
+          Authorization: `Bearer ${apiToken}`,
+        },
+        body: JSON.stringify({
+          title: title,
+          is_completed: false,
+          display_order: 1,
+        }),
+      });
+
+      if (!response.ok) {
+        throw new Error(`Server creation error code: ${response.status}`);
+      }
+
+      const data = await response.json();
+      const newTask = data.task || data;
+      setTasks((prevTasks) => [...prevTasks, newTask]);
+    } catch (error) {
+      console.error("Task creation failed:", error.message);
+    }
+  };
+
   useEffect(() => {
-    fetchTasks();
+    const apiToken = localStorage.getItem("api_token");
+    if (apiToken) {
+      setIsLoading(true);
+      fetchTasks();
+    } else {
+      setIsLoading(false);
+    }
   }, []);
 
-  return { tasks, errors, isLoading };
+  return { tasks, errors, isLoading, createTask };
 };
