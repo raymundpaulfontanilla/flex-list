@@ -143,7 +143,7 @@ export const useFetch = () => {
   };
 
   useEffect(() => {
-    const apiToken = localStorage.getItem("api_token");
+    const apiToken = getValidatedToken();
     if (apiToken) {
       setIsLoading(true);
       fetchTasks();
