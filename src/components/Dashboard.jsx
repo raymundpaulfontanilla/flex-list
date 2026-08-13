@@ -90,7 +90,9 @@ function Dashboard() {
               <div className={styles.welcomeText}>Welcome</div>
               <div className={styles.userName}>{userName}</div>
             </div>
-            Logout
+            <button className={styles.logoutButton} onClick={handleLogout}>
+              Log-out
+            </button>
           </div>
         </div>
 
