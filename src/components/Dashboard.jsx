@@ -129,7 +129,12 @@ function Dashboard() {
                       >
                         ✏️
                       </button>
-                      <button className={styles.actionButton}>🗑️</button>
+                      <button
+                        className={styles.actionButton}
+                        onClick={() => deleteTask(task.id)}
+                      >
+                        🗑️
+                      </button>
                     </div>
                   </div>
                 </div>
@@ -173,7 +178,12 @@ function Dashboard() {
                       >
                         ✏️
                       </button>
-                      <button className={styles.actionButton}>🗑️</button>
+                      <button
+                        className={styles.actionButton}
+                        onClick={() => deleteTask(task.id)}
+                      >
+                        🗑️
+                      </button>
                     </div>
                   </div>
                 </div>
