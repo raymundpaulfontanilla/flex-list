@@ -59,6 +59,8 @@ export const useFetch = () => {
   };
 
   const createTask = async (title) => {
+    if (!getValidatedToken) return;
+
     try {
       const nextOrder = tasks.length + 1;
 
