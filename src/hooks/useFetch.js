@@ -13,16 +13,21 @@ export const useFetch = () => {
   const [isLoading, setIsLoading] = useState(true);
 
   const fetchTasks = async () => {
-    try {
-      setIsLoading(true);
-      setErrors(null);
+    const apiToken = localStorage.getItem("api_token");
 
-      const apiToken = localStorage.getItem("api_token");
+    if (!apiToken) {
+      setIsLoading(false);
+      return;
+    }
+
+    try {
+      setErrors(null);
 
       const response = await fetch(ENDPOINTS.getAllTasks, {
         method: "GET",
         headers: {
           "Content-Type": "application/json",
+          Accept: "application/json",
           Authorization: `Bearer ${apiToken}`,
         },
       });
