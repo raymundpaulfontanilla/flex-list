@@ -25,6 +25,14 @@ function Dashboard() {
     }
   }, [errors, navigate]);
 
+  const handleFormSubmit = async (e) => {
+    e.preventDefault();
+    if (!newTaskTitle.trim()) return;
+
+    await createTask(newTaskTitle);
+    setNewTaskTitle("");
+  };
+
   if (isLoading) {
     return <p>Loading...</p>;
   }
