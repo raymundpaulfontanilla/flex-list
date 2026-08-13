@@ -719,10 +719,21 @@
 }
 
 .saveButton {
-  background-color: #2563eb; /* Clean blue button */
+  background-color: #2563eb;
   color: #ffffff;
   border: none;
   padding: 8px 16px;
   border-radius: 4px;
   cursor: pointer;
+}
+.logoutButton {
+  background: none;
+  border: none;
+  color: #ffffff;
+  font-size: 14px;
+  font-weight: 600;
+  cursor: pointer;
+  padding: 4px 8px;
+  border-radius: 4px;
+  transition: background-color 0.2s ease;
 }
