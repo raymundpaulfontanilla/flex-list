@@ -55,6 +55,13 @@ function Dashboard() {
     }
   };
 
+  const handleLogout = () => {
+    localStorage.removeItem("api_token");
+    localStorage.removeItem("name");
+
+    navigate("/login");
+  };
+
   if (isLoading) {
     return <p>Loading...</p>;
   }
