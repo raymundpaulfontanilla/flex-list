@@ -38,11 +38,15 @@ function Dashboard() {
   }
 
   const pendingTasks = Array.isArray(tasks)
-    ? tasks.filter((task) => task.is_completed === 0 || !task.is_completed)
+    ? tasks
+        .filter((task) => task.is_completed === 0 || !task.is_completed)
+        .sort((a, b) => Number(a.display_order) - Number(b.display_order))
     : [];
 
   const completedTasks = Array.isArray(tasks)
-    ? tasks.filter((task) => task.is_completed === 1)
+    ? tasks
+        .filter((task) => task.is_completed === 1)
+        .sort((a, b) => Number(a.display_order) - Number(b.display_order))
     : [];
 
   return (

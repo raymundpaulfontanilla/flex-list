@@ -50,6 +50,13 @@ export const useFetch = () => {
       const apiToken = localStorage.getItem("api_token");
       if (!apiToken) return;
 
+      const nextOrder = tasks.length + 1;
+
+      if (nextOrder > 5) {
+        alert("Maximum limit of 5 tasks reached!");
+        return;
+      }
+
       const response = await fetch(ENDPOINTS.createTask, {
         method: "POST",
         headers: {
@@ -60,7 +67,7 @@ export const useFetch = () => {
         body: JSON.stringify({
           title: title,
           is_completed: false,
-          display_order: 1,
+          display_order: nextOrder,
         }),
       });
 
