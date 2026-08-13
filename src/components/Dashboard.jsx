@@ -122,7 +122,12 @@ function Dashboard() {
                       </div>
                     </div>
                     <div className={styles.taskActions}>
-                      <button className={styles.actionButton}>✏️</button>
+                      <button
+                        className={styles.actionButton}
+                        onClick={() => openEditModal(task)}
+                      >
+                        ✏️
+                      </button>
                       <button className={styles.actionButton}>🗑️</button>
                     </div>
                   </div>
@@ -133,9 +138,6 @@ function Dashboard() {
             <div className={styles.emptyState}>
               <div className={styles.emptyIcon}>☕</div>
               <div className={styles.emptyTitle}>All caught up!</div>
-              <div className={styles.emptySubtitle}>
-                No pending tasks at the moment.
-              </div>
             </div>
           )}
         </div>
@@ -150,8 +152,12 @@ function Dashboard() {
 
           {completedTasks.length > 0 ? (
             <div className={styles.tasksList}>
-              {completedTasks.map((task) => (
-                <div key={task.id} draggable className={styles.taskCard}>
+              {completedTasks.map((task, index) => (
+                <div
+                  key={task.id || `completed-${index}`}
+                  draggable
+                  className={styles.taskCard}
+                >
                   <div className={styles.taskContent}>
                     <div className={styles.taskDetails}>
                       <div className={styles.taskTitle}>{task.title}</div>
@@ -160,7 +166,12 @@ function Dashboard() {
                       </div>
                     </div>
                     <div className={styles.taskActions}>
-                      <button className={styles.actionButton}>✏️</button>
+                      <button
+                        className={styles.actionButton}
+                        onClick={() => openEditModal(task)}
+                      >
+                        ✏️
+                      </button>
                       <button className={styles.actionButton}>🗑️</button>
                     </div>
                   </div>
