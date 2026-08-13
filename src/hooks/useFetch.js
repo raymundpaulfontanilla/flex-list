@@ -124,6 +124,24 @@ export const useFetch = () => {
     }
   };
 
+  const deleteTask = async (taskId) => {
+    const headers = getAuthHeaders();
+    if (!headers.Authorization) return;
+
+    try {
+      const response = await fetch(ENDPOINTS.deleteTask(taskId), {
+        method: "DELETE",
+        headers: getAuthHeaders(),
+      });
+      if (!response.ok) {
+        throw new Error(`Server deletion error code: ${response.status}`);
+      }
+      setTasks((prevTasks) => prevTasks.filter((task) => task.id !== taskId));
+    } catch (error) {
+      console.error("Task deletion failed", error.message);
+    }
+  };
+
   useEffect(() => {
     const apiToken = localStorage.getItem("api_token");
     if (apiToken) {
