@@ -1,6 +1,7 @@
 import { Container, Form, Row, Col, Button, Alert } from "react-bootstrap";
 import { useState } from "react";
 import { useNavigate } from "react-router-dom";
+import PageMeta from "./PageMeta";
 
 function Login() {
   const [errors, setErrors] = useState({});
@@ -98,85 +99,91 @@ function Login() {
   };
 
   return (
-    <Container
-      className="d-flex justify-content-center align-items-center"
-      style={{ minHeight: "100vh" }}
-    >
-      <Row className="w-100 justify-content-center">
-        <Col xs={12} md={8} lg={6}>
-          <div className="p-4 p-md-5 shadow-lg rounded-3 bg-white">
-            <h2 className="text-center mb-4">Login</h2>
-            {errorMessage && (
-              <Alert
-                variant="danger"
-                className="mb-4"
-                dismissible
-                onClose={clearMessages}
-              >
-                <p className="mb-0">{errorMessage}</p>
-              </Alert>
-            )}
-            <Form onSubmit={handleSubmit}>
-              <Form.Group className="mb-3" controlId="formBasicUsername">
-                <Form.Label>Username</Form.Label>
-                <Form.Control
-                  type="text"
-                  placeholder="Enter username"
-                  name="username"
-                  autoComplete="username"
-                  value={formdata.username}
-                  onChange={handleChange}
-                  isInvalid={!!errors.username}
-                />
-                <Form.Control.Feedback type="invalid">
-                  {errors.username}
-                </Form.Control.Feedback>
-              </Form.Group>
-
-              <Form.Group className="mb-3" controlId="formBasicPassword">
-                <Form.Label>Password</Form.Label>
-                <Form.Control
-                  type="password"
-                  placeholder="Password"
-                  name="password"
-                  autoComplete="current-password"
-                  value={formdata.password}
-                  onChange={handleChange}
-                  isInvalid={!!errors.password}
-                />
-                <Form.Control.Feedback type="invalid">
-                  {errors.password}
-                </Form.Control.Feedback>
-              </Form.Group>
-
-              <div className="d-grid">
-                <Button
-                  variant="primary"
-                  type="submit"
-                  size="lg"
-                  disabled={isLoading}
+    <>
+      <PageMeta
+        title="Login"
+        faviconUrl="src/note-task-comment-message-edit-write_108613.ico"
+      />
+      <Container
+        className="d-flex justify-content-center align-items-center"
+        style={{ minHeight: "100vh" }}
+      >
+        <Row className="w-100 justify-content-center">
+          <Col xs={12} md={8} lg={6}>
+            <div className="p-4 p-md-5 shadow-lg rounded-3 bg-white">
+              <h2 className="text-center mb-4">Login</h2>
+              {errorMessage && (
+                <Alert
+                  variant="danger"
+                  className="mb-4"
+                  dismissible
+                  onClose={clearMessages}
                 >
-                  {isLoading ? "Logging in..." : "Login"}
-                </Button>
-              </div>
+                  <p className="mb-0">{errorMessage}</p>
+                </Alert>
+              )}
+              <Form onSubmit={handleSubmit}>
+                <Form.Group className="mb-3" controlId="formBasicUsername">
+                  <Form.Label>Username</Form.Label>
+                  <Form.Control
+                    type="text"
+                    placeholder="Enter username"
+                    name="username"
+                    autoComplete="username"
+                    value={formdata.username}
+                    onChange={handleChange}
+                    isInvalid={!!errors.username}
+                  />
+                  <Form.Control.Feedback type="invalid">
+                    {errors.username}
+                  </Form.Control.Feedback>
+                </Form.Group>
 
-              <div className="text-center mt-3">
-                <p className="mb-0">
-                  Don't have an account?{" "}
+                <Form.Group className="mb-3" controlId="formBasicPassword">
+                  <Form.Label>Password</Form.Label>
+                  <Form.Control
+                    type="password"
+                    placeholder="Password"
+                    name="password"
+                    autoComplete="current-password"
+                    value={formdata.password}
+                    onChange={handleChange}
+                    isInvalid={!!errors.password}
+                  />
+                  <Form.Control.Feedback type="invalid">
+                    {errors.password}
+                  </Form.Control.Feedback>
+                </Form.Group>
+
+                <div className="d-grid">
                   <Button
-                    variant="link"
-                    className="p-0"
-                    onClick={() => navigate("/register")}
+                    variant="primary"
+                    type="submit"
+                    size="lg"
+                    disabled={isLoading}
                   >
-                    Register here
+                    {isLoading ? "Logging in..." : "Login"}
                   </Button>
-                </p>
-              </div>
-            </Form>
-          </div>
-        </Col>
-      </Row>
-    </Container>
+                </div>
+
+                <div className="text-center mt-3">
+                  <p className="mb-0">
+                    Don't have an account?{" "}
+                    <Button
+                      variant="link"
+                      className="p-0"
+                      onClick={() => navigate("/register")}
+                    >
+                      Register here
+                    </Button>
+                  </p>
+                </div>
+              </Form>
+            </div>
+          </Col>
+        </Row>
+      </Container>
+    </>
   );
 }
 
