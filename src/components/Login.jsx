@@ -123,6 +123,7 @@ function Login() {
                   type="text"
                   placeholder="Enter username"
                   name="username"
+                  autoComplete="username"
                   value={formdata.username}
                   onChange={handleChange}
                   isInvalid={!!errors.username}
@@ -138,6 +139,7 @@ function Login() {
                   type="password"
                   placeholder="Password"
                   name="password"
+                  autoComplete="current-password"
                   value={formdata.password}
                   onChange={handleChange}
                   isInvalid={!!errors.password}
