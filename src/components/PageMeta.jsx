@@ -3,7 +3,7 @@ import { useEffect } from "react";
 function PageMeta({ title, faviconUrl }) {
   useEffect(() => {
     if (title) {
-      document.title = `${title} | Flex List`;
+      document.title = `${title}`;
     }
 
     if (faviconUrl) {
