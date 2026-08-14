@@ -142,6 +142,38 @@ export const useFetch = () => {
     }
   };
 
+  const toggleTaskStatus = async (
+    taskId,
+    newIsCompletedState,
+    currentTitle,
+  ) => {
+    try {
+      const url = ENDPOINTS.updateTask(taskId);
+      const response = await fetch(url, {
+        method: "PUT",
+        headers: getAuthHeaders(),
+        body: JSON.stringify({
+          title: currentTitle,
+          is_completed: newIsCompletedState,
+          display_order: 1,
+        }),
+      });
+
+      if (!response.ok) {
+        throw new Error(`Status toggle server error code: ${response.status}`);
+      }
+
+      const data = await response.json();
+      const updatedTask = data.task || data;
+
+      setTasks((prevTasks) =>
+        prevTasks.map((task) => (task.id === taskId ? updatedTask : task)),
+      );
+    } catch (error) {
+      console.error("Failed to update task column status:", error.message);
+    }
+  };
+
   useEffect(() => {
     const apiToken = getValidatedToken();
     if (apiToken) {
@@ -152,5 +184,13 @@ export const useFetch = () => {
     }
   }, []);
 
-  return { tasks, errors, isLoading, createTask, updateTask, deleteTask };
+  return {
+    tasks,
+    errors,
+    isLoading,
+    createTask,
+    updateTask,
+    deleteTask,
+    toggleTaskStatus,
+  };
 };

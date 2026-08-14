@@ -3,10 +3,18 @@ import { useFetch } from "../hooks/useFetch";
 import { useNavigate } from "react-router-dom";
 import { useEffect, useState } from "react";
 import PageMeta from "./PageMeta";
+import { DragDropContext, Droppable, Draggable } from "@hello-pangea/dnd";
 
 function Dashboard() {
-  const { errors, isLoading, tasks, createTask, updateTask, deleteTask } =
-    useFetch();
+  const {
+    errors,
+    isLoading,
+    tasks,
+    createTask,
+    updateTask,
+    deleteTask,
+    toggleTaskStatus,
+  } = useFetch();
   const navigate = useNavigate();
   const [userName, setUserName] = useState(null);
   const [newTaskTitle, setNewTaskTitle] = useState("");
@@ -16,18 +24,15 @@ function Dashboard() {
   const [editTaskTitle, setEditTaskTitle] = useState("");
 
   useEffect(() => {
-    const apiToken = localStorage.getItem("api_token");
-    const storedName = localStorage.getItem("name");
-
-    if (errors || !apiToken) {
+    if (errors) {
       navigate("/login");
-      return;
-    }
-
-    if (storedName && storedName.length > 0) {
-      const storedNameUpperFirst = storedName.charAt(0).toUpperCase();
-      const restOfName = storedName.slice(1).toLowerCase();
-      setUserName(storedNameUpperFirst + restOfName);
+    } else {
+      const storedName = localStorage.getItem("name");
+      if (storedName && storedName.length > 0) {
+        const storedNameUpperFirst = storedName.charAt(0).toUpperCase();
+        const restOfName = storedName.slice(1).toLowerCase();
+        setUserName(storedNameUpperFirst + restOfName);
+      }
     }
   }, [errors, navigate]);
 
@@ -56,11 +61,24 @@ function Dashboard() {
     }
   };
 
-  const handleLogout = () => {
-    localStorage.removeItem("api_token");
-    localStorage.removeItem("name");
+  const onDragEnd = async (result) => {
+    const { destination, source, draggableId } = result;
 
-    navigate("/login");
+    if (!destination) return;
+    if (
+      destination.droppableId === source.droppableId &&
+      destination.index === source.index
+    )
+      return;
+
+    const taskId = Number(draggableId);
+    const newIsCompletedState =
+      destination.droppableId === "completed" ? true : false;
+
+    const draggedTask = tasks.find((t) => t.id === taskId);
+    const currentTitle = draggedTask ? draggedTask.title : "";
+
+    await toggleTaskStatus(taskId, newIsCompletedState, currentTitle);
   };
 
   if (isLoading) {
@@ -70,23 +88,31 @@ function Dashboard() {
   const pendingTasks = Array.isArray(tasks)
     ? tasks
         .filter(
-          (task) => task && (task.is_completed == 0 || !task.is_completed),
+          (task) =>
+            task &&
+            (task.is_completed == 0 ||
+              !task.is_completed ||
+              task.is_completed === false),
         )
         .sort((a, b) => Number(a.display_order) - Number(b.display_order))
     : [];
 
   const completedTasks = Array.isArray(tasks)
     ? tasks
-        .filter((task) => task && task.is_completed == 1)
+        .filter(
+          (task) =>
+            task && (task.is_completed == 1 || task.is_completed === true),
+        )
         .sort((a, b) => Number(a.display_order) - Number(b.display_order))
     : [];
 
   return (
     <>
       <PageMeta
-        title="FlexList"
-        faviconUrl="src/note-task-comment-message-edit-write_108613.ico"
+        title="My Tasks Dashboard"
+        faviconUrl="/note-task-comment-message-edit-write_108613.ico"
       />
+
       <div className={styles.container}>
         <div className={styles.header}>
           <div className={styles.headerTop}>
@@ -96,9 +122,7 @@ function Dashboard() {
                 <div className={styles.welcomeText}>Welcome</div>
                 <div className={styles.userName}>{userName}</div>
               </div>
-              <button className={styles.logoutButton} onClick={handleLogout}>
-                Log-out
-              </button>
+              Logout
             </div>
           </div>
 
@@ -116,134 +140,169 @@ function Dashboard() {
           </form>
         </div>
 
-        <div className={styles.tasksContainer}>
-          <div className={`${styles.column} ${styles.pendingColumn}`}>
-            <div className={styles.columnHeader}>
-              <h4 className={styles.columnTitle}>📝 Pending Tasks</h4>
-              <span className={`${styles.counter} ${styles.pendingCounter}`}>
-                {pendingTasks.length}
-              </span>
-            </div>
-
-            {pendingTasks.length > 0 ? (
-              <div className={styles.tasksList}>
-                {pendingTasks.map((task, index) => (
-                  <div
-                    key={task.id || `pending-${index}`}
-                    draggable
-                    className={styles.taskCard}
-                  >
-                    <div className={styles.taskContent}>
-                      <div className={styles.taskDetails}>
-                        <div className={styles.taskTitle}>{task.title}</div>
-                        <div className={styles.taskMeta}>
-                          Order: {task.display_order}
-                        </div>
-                      </div>
-                      <div className={styles.taskActions}>
-                        <button
-                          className={styles.actionButton}
-                          onClick={() => openEditModal(task)}
-                        >
-                          ✏️
-                        </button>
-                        <button
-                          className={styles.actionButton}
-                          onClick={() => deleteTask(task.id)}
-                        >
-                          🗑️
-                        </button>
-                      </div>
-                    </div>
+        <DragDropContext onDragEnd={onDragEnd}>
+          <div className={styles.tasksContainer}>
+            {/* PENDING COLUMN TARGET CONTAINER */}
+            <Droppable droppableId="pending">
+              {(provided) => (
+                <div
+                  ref={provided.innerRef}
+                  {...provided.droppableProps}
+                  className={`${styles.column} ${styles.pendingColumn}`}
+                >
+                  <div className={styles.columnHeader}>
+                    <h4 className={styles.columnTitle}>📝 Pending Tasks</h4>
+                    <span
+                      className={`${styles.counter} ${styles.pendingCounter}`}
+                    >
+                      {pendingTasks.length}
+                    </span>
                   </div>
-                ))}
-              </div>
-            ) : (
-              <div className={styles.emptyState}>
-                <div className={styles.emptyIcon}>☕</div>
-                <div className={styles.emptyTitle}>All caught up!</div>
-              </div>
-            )}
+
+                  <div className={styles.tasksList}>
+                    {pendingTasks.map((task, index) => (
+                      <Draggable
+                        key={String(task.id)}
+                        draggableId={String(task.id)}
+                        index={index}
+                      >
+                        {(provided) => (
+                          <div
+                            ref={provided.innerRef}
+                            {...provided.draggableProps}
+                            {...provided.dragHandleProps}
+                            className={styles.taskCard}
+                          >
+                            <div className={styles.taskContent}>
+                              <div className={styles.taskDetails}>
+                                <div className={styles.taskTitle}>
+                                  {task.title}
+                                </div>
+                                <div className={styles.taskMeta}>
+                                  Order: {task.display_order}
+                                </div>
+                              </div>
+                              <div className={styles.taskActions}>
+                                <button
+                                  className={styles.actionButton}
+                                  onClick={() => openEditModal(task)}
+                                >
+                                  ✏️
+                                </button>
+                                <button
+                                  className={styles.actionButton}
+                                  onClick={() => deleteTask(task.id)}
+                                >
+                                  🗑️
+                                </button>
+                              </div>
+                            </div>
+                          </div>
+                        )}
+                      </Draggable>
+                    ))}
+                    {provided.placeholder}
+                  </div>
+                </div>
+              )}
+            </Droppable>
+
+            <Droppable droppableId="completed">
+              {(provided) => (
+                <div
+                  ref={provided.innerRef}
+                  {...provided.droppableProps}
+                  className={`${styles.column} ${styles.completedColumn}`}
+                >
+                  <div className={styles.columnHeader}>
+                    <h4 className={styles.columnTitle}>✅ Completed Tasks</h4>
+                    <span
+                      className={`${styles.counter} ${styles.completedCounter}`}
+                    >
+                      {completedTasks.length}
+                    </span>
+                  </div>
+
+                  <div className={styles.tasksList}>
+                    {completedTasks.map((task, index) => (
+                      <Draggable
+                        key={String(task.id)}
+                        draggableId={String(task.id)}
+                        index={index}
+                      >
+                        {(provided) => (
+                          <div
+                            ref={provided.innerRef}
+                            {...provided.draggableProps}
+                            {...provided.dragHandleProps}
+                            className={styles.taskCard}
+                          >
+                            <div className={styles.taskContent}>
+                              <div className={styles.taskDetails}>
+                                <div className={styles.taskTitle}>
+                                  {task.title}
+                                </div>
+                                <div className={styles.taskMeta}>
+                                  Order: {task.display_order}
+                                </div>
+                              </div>
+                              <div className={styles.taskActions}>
+                                <button
+                                  className={styles.actionButton}
+                                  onClick={() => openEditModal(task)}
+                                >
+                                  ✏️
+                                </button>
+                                <button
+                                  className={styles.actionButton}
+                                  onClick={() => deleteTask(task.id)}
+                                >
+                                  🗑️
+                                </button>
+                              </div>
+                            </div>
+                          </div>
+                        )}
+                      </Draggable>
+                    ))}
+                    {provided.placeholder}
+                  </div>
+                </div>
+              )}
+            </Droppable>
           </div>
+        </DragDropContext>
+      </div>
 
-          <div className={`${styles.column} ${styles.completedColumn}`}>
-            <div className={styles.columnHeader}>
-              <h4 className={styles.columnTitle}>✅ Completed Tasks</h4>
-              <span className={`${styles.counter} ${styles.completedCounter}`}>
-                {completedTasks.length}
-              </span>
-            </div>
-
-            {completedTasks.length > 0 ? (
-              <div className={styles.tasksList}>
-                {completedTasks.map((task, index) => (
-                  <div
-                    key={task.id || `completed-${index}`}
-                    draggable
-                    className={styles.taskCard}
-                  >
-                    <div className={styles.taskContent}>
-                      <div className={styles.taskDetails}>
-                        <div className={styles.taskTitle}>{task.title}</div>
-                        <div className={styles.taskMeta}>
-                          Order: {task.display_order}
-                        </div>
-                      </div>
-                      <div className={styles.taskActions}>
-                        <button
-                          className={styles.actionButton}
-                          onClick={() => openEditModal(task)}
-                        >
-                          ✏️
-                        </button>
-                        <button
-                          className={styles.actionButton}
-                          onClick={() => deleteTask(task.id)}
-                        >
-                          🗑️
-                        </button>
-                      </div>
-                    </div>
-                  </div>
-                ))}
+      {/* Edit Modal Overlay */}
+      {isModalOpen && (
+        <div className={styles.modalOverlay}>
+          <div className={styles.modalContent}>
+            <h4>✏️ Edit Task Title</h4>
+            <form onSubmit={handleEditSubmit}>
+              <input
+                type="text"
+                className={styles.modalInput}
+                value={editTaskTitle}
+                onChange={(e) => setEditTaskTitle(e.target.value)}
+                required
+              />
+              <div className={styles.modalActions}>
+                <button
+                  type="button"
+                  className={styles.cancelButton}
+                  onClick={() => setIsModalOpen(false)}
+                >
+                  Cancel
+                </button>
+                <button type="submit" className={styles.saveButton}>
+                  Save Changes
+                </button>
               </div>
-            ) : (
-              <div className={styles.emptyState}>
-                <div className={styles.emptyIcon}>🎉</div>
-                <div className={styles.emptyTitle}>No completed tasks yet</div>
-              </div>
-            )}
+            </form>
           </div>
         </div>
-        {isModalOpen && (
-          <div className={styles.modalOverlay}>
-            <div className={styles.modalContent}>
-              <h4>✏️ Edit Task Title</h4>
-              <form onSubmit={handleEditSubmit}>
-                <input
-                  type="text"
-                  className={styles.modalInput}
-                  value={editTaskTitle}
-                  onChange={(e) => setEditTaskTitle(e.target.value)}
-                  required
-                />
-                <div className={styles.modalActions}>
-                  <button
-                    type="button"
-                    className={styles.cancelButton}
-                    onClick={() => setIsModalOpen(false)}
-                  >
-                    Cancel
-                  </button>
-                  <button type="submit" className={styles.saveButton}>
-                    Save Changes
-                  </button>
-                </div>
-              </form>
-            </div>
-          </div>
-        )}
-      </div>
+      )}
     </>
   );
 }
