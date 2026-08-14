@@ -1,6 +1,7 @@
 import { Container, Form, Row, Col, Button, Alert } from "react-bootstrap";
 import { useState } from "react";
 import { useNavigate } from "react-router-dom";
+import PageMeta from "./PageMeta";
 
 function Register() {
   const [formData, setFormData] = useState({
@@ -125,130 +126,139 @@ function Register() {
   };
 
   return (
-    <Container
-      className="d-flex justify-content-center align-items-center"
-      style={{ minHeight: "100vh" }}
-    >
-      <Row className="w-100 justify-content-center">
-        <Col xs={12} md={8} lg={6}>
-          <div className="p-4 p-md-5 shadow-lg rounded-3 bg-white">
-            <h2 className="text-center mb-4">Register</h2>
-            {successMessage && (
-              <Alert
-                variant="success"
-                className="mb-4"
-                dismissible
-                onClose={clearMessages}
-              >
-                <p className="mb-0">{successMessage}</p>
-              </Alert>
-            )}
-            {errorMessage && (
-              <Alert
-                variant="danger"
-                className="mb-4"
-                dismissible
-                onClose={clearMessages}
-              >
-                <p className="mb-0">{errorMessage}</p>
-              </Alert>
-            )}
-            <Form onSubmit={handleSubmit}>
-              <Form.Group className="mb-3" controlId="formBasicName">
-                <Form.Label>Name</Form.Label>
-                <Form.Control
-                  type="text"
-                  placeholder="Enter name"
-                  name="name"
-                  autoComplete="name"
-                  value={formData.name}
-                  onChange={handleChange}
-                  isInvalid={!!errors.name}
-                  disabled={isLoading}
-                />
-                <Form.Control.Feedback type="invalid">
-                  {errors.name}
-                </Form.Control.Feedback>
-              </Form.Group>
-
-              <Form.Group className="mb-3" controlId="formBasicUsername">
-                <Form.Label>Username</Form.Label>
-                <Form.Control
-                  type="text"
-                  placeholder="Enter username"
-                  name="username"
-                  autoComplete="username"
-                  value={formData.username}
-                  onChange={handleChange}
-                  isInvalid={!!errors.username}
-                  disabled={isLoading}
-                />
-                <Form.Control.Feedback type="invalid">
-                  {errors.username}
-                </Form.Control.Feedback>
-              </Form.Group>
-
-              <Form.Group className="mb-3" controlId="formBasicPassword">
-                <Form.Label>Password</Form.Label>
-                <Form.Control
-                  type="password"
-                  placeholder="Password"
-                  name="password"
-                  autoComplete="new-password"
-                  value={formData.password}
-                  onChange={handleChange}
-                  isInvalid={!!errors.password}
-                  disabled={isLoading}
-                />
-                <Form.Control.Feedback type="invalid">
-                  {errors.password}
-                </Form.Control.Feedback>
-              </Form.Group>
-
-              <Form.Group className="mb-3" controlId="formBasicConfirmPassword">
-                <Form.Label>Confirm Password</Form.Label>
-                <Form.Control
-                  type="password"
-                  placeholder="Confirm Password"
-                  name="password_confirmation"
-                  autoComplete="new-password"
-                  value={formData.password_confirmation}
-                  onChange={handleChange}
-                  isInvalid={!!errors.password_confirmation}
-                  disabled={isLoading}
-                />
-                <Form.Control.Feedback type="invalid">
-                  {errors.password_confirmation}
-                </Form.Control.Feedback>
-              </Form.Group>
-
-              <div className="d-grid">
-                <Button
-                  variant="primary"
-                  type="submit"
-                  size="lg"
-                  disabled={isLoading}
+    <>
+      <PageMeta
+        title="Registration"
+        faviconUrl="src/note-task-comment-message-edit-write_108613.ico"
+      />
+      <Container
+        className="d-flex justify-content-center align-items-center"
+        style={{ minHeight: "100vh" }}
+      >
+        <Row className="w-100 justify-content-center">
+          <Col xs={12} md={8} lg={6}>
+            <div className="p-4 p-md-5 shadow-lg rounded-3 bg-white">
+              <h2 className="text-center mb-4">Register</h2>
+              {successMessage && (
+                <Alert
+                  variant="success"
+                  className="mb-4"
+                  dismissible
+                  onClose={clearMessages}
                 >
-                  {isLoading ? "Loading..." : "Submit"}
-                </Button>
-              </div>
-              <div className="text-center mt-3">
-                <p className="mb-0">
-                  Already have an account?{" "}
+                  <p className="mb-0">{successMessage}</p>
+                </Alert>
+              )}
+              {errorMessage && (
+                <Alert
+                  variant="danger"
+                  className="mb-4"
+                  dismissible
+                  onClose={clearMessages}
+                >
+                  <p className="mb-0">{errorMessage}</p>
+                </Alert>
+              )}
+              <Form onSubmit={handleSubmit}>
+                <Form.Group className="mb-3" controlId="formBasicName">
+                  <Form.Label>Name</Form.Label>
+                  <Form.Control
+                    type="text"
+                    placeholder="Enter name"
+                    name="name"
+                    autoComplete="name"
+                    value={formData.name}
+                    onChange={handleChange}
+                    isInvalid={!!errors.name}
+                    disabled={isLoading}
+                  />
+                  <Form.Control.Feedback type="invalid">
+                    {errors.name}
+                  </Form.Control.Feedback>
+                </Form.Group>
+
+                <Form.Group className="mb-3" controlId="formBasicUsername">
+                  <Form.Label>Username</Form.Label>
+                  <Form.Control
+                    type="text"
+                    placeholder="Enter username"
+                    name="username"
+                    autoComplete="username"
+                    value={formData.username}
+                    onChange={handleChange}
+                    isInvalid={!!errors.username}
+                    disabled={isLoading}
+                  />
+                  <Form.Control.Feedback type="invalid">
+                    {errors.username}
+                  </Form.Control.Feedback>
+                </Form.Group>
+
+                <Form.Group className="mb-3" controlId="formBasicPassword">
+                  <Form.Label>Password</Form.Label>
+                  <Form.Control
+                    type="password"
+                    placeholder="Password"
+                    name="password"
+                    autoComplete="new-password"
+                    value={formData.password}
+                    onChange={handleChange}
+                    isInvalid={!!errors.password}
+                    disabled={isLoading}
+                  />
+                  <Form.Control.Feedback type="invalid">
+                    {errors.password}
+                  </Form.Control.Feedback>
+                </Form.Group>
+
+                <Form.Group
+                  className="mb-3"
+                  controlId="formBasicConfirmPassword"
+                >
+                  <Form.Label>Confirm Password</Form.Label>
+                  <Form.Control
+                    type="password"
+                    placeholder="Confirm Password"
+                    name="password_confirmation"
+                    autoComplete="new-password"
+                    value={formData.password_confirmation}
+                    onChange={handleChange}
+                    isInvalid={!!errors.password_confirmation}
+                    disabled={isLoading}
+                  />
+                  <Form.Control.Feedback type="invalid">
+                    {errors.password_confirmation}
+                  </Form.Control.Feedback>
+                </Form.Group>
+
+                <div className="d-grid">
                   <Button
-                    variant="link"
-                    className="p-0"
-                    onClick={() => navigate("/login")}
+                    variant="primary"
+                    type="submit"
+                    size="lg"
+                    disabled={isLoading}
                   >
-                    Login here
+                    {isLoading ? "Loading..." : "Submit"}
                   </Button>
-                </p>
-              </div>
-            </Form>
-          </div>
-        </Col>
-      </Row>
-    </Container>
+                </div>
+                <div className="text-center mt-3">
+                  <p className="mb-0">
+                    Already have an account?{" "}
+                    <Button
+                      variant="link"
+                      className="p-0"
+                      onClick={() => navigate("/login")}
+                    >
+                      Login here
+                    </Button>
+                  </p>
+                </div>
+              </Form>
+            </div>
+          </Col>
+        </Row>
+      </Container>
+    </>
   );
 }
 
