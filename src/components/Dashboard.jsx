@@ -61,11 +61,24 @@ function Dashboard() {
     }
   };
 
-  const handleLogout = () => {
-    localStorage.removeItem("api_token");
-    localStorage.removeItem("name");
+  const onDragEnd = async (result) => {
+    const { destination, source, draggableId } = result;
 
-    navigate("/login");
+    if (!destination) return;
+    if (
+      destination.droppableId === source.droppableId &&
+      destination.index === source.index
+    )
+      return;
+
+    const taskId = Number(draggableId);
+    const newIsCompletedState =
+      destination.droppableId === "completed" ? true : false;
+
+    const draggedTask = tasks.find((t) => t.id === taskId);
+    const currentTitle = draggedTask ? draggedTask.title : "";
+
+    await toggleTaskStatus(taskId, newIsCompletedState, currentTitle);
   };
 
   if (isLoading) {
