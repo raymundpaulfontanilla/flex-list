@@ -160,6 +160,7 @@ function Register() {
                   type="text"
                   placeholder="Enter name"
                   name="name"
+                  autoComplete="name"
                   value={formData.name}
                   onChange={handleChange}
                   isInvalid={!!errors.name}
@@ -176,6 +177,7 @@ function Register() {
                   type="text"
                   placeholder="Enter username"
                   name="username"
+                  autoComplete="username"
                   value={formData.username}
                   onChange={handleChange}
                   isInvalid={!!errors.username}
@@ -192,6 +194,7 @@ function Register() {
                   type="password"
                   placeholder="Password"
                   name="password"
+                  autoComplete="new-password"
                   value={formData.password}
                   onChange={handleChange}
                   isInvalid={!!errors.password}
@@ -208,6 +211,7 @@ function Register() {
                   type="password"
                   placeholder="Confirm Password"
                   name="password_confirmation"
+                  autoComplete="new-password"
                   value={formData.password_confirmation}
                   onChange={handleChange}
                   isInvalid={!!errors.password_confirmation}
