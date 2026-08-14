@@ -24,18 +24,15 @@ function Dashboard() {
   const [editTaskTitle, setEditTaskTitle] = useState("");
 
   useEffect(() => {
-    const apiToken = localStorage.getItem("api_token");
-    const storedName = localStorage.getItem("name");
-
-    if (errors || !apiToken) {
+    if (errors) {
       navigate("/login");
-      return;
-    }
-
-    if (storedName && storedName.length > 0) {
-      const storedNameUpperFirst = storedName.charAt(0).toUpperCase();
-      const restOfName = storedName.slice(1).toLowerCase();
-      setUserName(storedNameUpperFirst + restOfName);
+    } else {
+      const storedName = localStorage.getItem("name");
+      if (storedName && storedName.length > 0) {
+        const storedNameUpperFirst = storedName.charAt(0).toUpperCase();
+        const restOfName = storedName.slice(1).toLowerCase();
+        setUserName(storedNameUpperFirst + restOfName);
+      }
     }
   }, [errors, navigate]);
 
