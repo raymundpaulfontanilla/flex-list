@@ -3,10 +3,18 @@ import { useFetch } from "../hooks/useFetch";
 import { useNavigate } from "react-router-dom";
 import { useEffect, useState } from "react";
 import PageMeta from "./PageMeta";
+import { DragDropContext, Droppable, Draggable } from "@hello-pangea/dnd";
 
 function Dashboard() {
-  const { errors, isLoading, tasks, createTask, updateTask, deleteTask } =
-    useFetch();
+  const {
+    errors,
+    isLoading,
+    tasks,
+    createTask,
+    updateTask,
+    deleteTask,
+    toggleTaskStatus,
+  } = useFetch();
   const navigate = useNavigate();
   const [userName, setUserName] = useState(null);
   const [newTaskTitle, setNewTaskTitle] = useState("");
